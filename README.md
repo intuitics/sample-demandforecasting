@@ -1,4 +1,2 @@
-sample-demandforecasting
+Sample demand forecasting application in Intuitics
 ========================
-
-Demand forecasting application in Intuitics
