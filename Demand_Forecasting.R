@@ -13,6 +13,10 @@ get.data <- function(country) {
   read.csv(textConnection(data))
 }
 
+has.no.country <- function(country = NULL) {
+  is.null(country)
+}
+
 get.summary <- function (data) {
   data.summary <- describe(data)
   data.summary <- data.summary[c("price", "marketing.budget", "catalog.pages", "competitor.strength", "total.cost", "revenue", "profit"), c("mean", "sd", "median", "min", "max", "range")]
@@ -60,6 +64,34 @@ get.forecast <- function (model, data, forecast.price, forecast.mkt.budget, fore
   data.frame(Month = c(num.months + 1), Demand.Avg = round(pred[,"fit"], 0), Demand.Upper = round(pred[,"upr"], 0), Demand.Lower = round(pred[,"lwr"], 0), Cost.Avg = round(costs, 0), Revenue.Avg = round(revenue, 0), Profit.Avg = round(revenue - costs, 0))
 }
 
+has.no.forecast <- function (forecast = NULL) {
+  is.null(forecast)
+}
+
+get.forecast.demand.avg <- function(forecast) {
+  forecast$Demand.Avg[1]
+}
+
+get.forecast.demand.lower <- function(forecast) {
+  forecast$Demand.Lower[1]
+}
+
+get.forecast.demand.upper <- function(forecast) {
+  forecast$Demand.Upper[1]
+}
+
+get.forecast.cost <- function(forecast) {
+  forecast$Cost.Avg[1]
+}
+
+get.forecast.revenue <- function(forecast) {
+  forecast$Revenue.Avg[1]
+}
+
+get.forecast.profit <- function(forecast) {
+  forecast$Profit.Avg[1]
+}
+
 get.forecast.plot <- function(data, forecast) {
   df <- tail(data[c("month", "demand", "profit")], 4)
   df <- rbind(df, setNames(forecast[c("Month", "Demand.Avg", "Profit.Avg")], names(df)))
@@ -67,6 +99,7 @@ get.forecast.plot <- function(data, forecast) {
   p <- ggplot(df, aes(x = month, y = value))
   p <- p + facet_grid(variable ~ ., scale="free")
   p <- p + geom_line() + xlab("Month") + ylab("Value")
+  p <- p + ggtitle("Last 3 months actual data + 1 month forecast\n(demand in units & profit in $)")
   p
 }
 
@@ -84,5 +117,5 @@ get.forecast.plot <- function(data, forecast) {
 #forecast.mkt.budget = 22000
 #forecast.catalog.pages = 0.5
 #forecast.comp.strength = 9
-#forecast <- get.forecast(model, data, forecast.price, forecast.mkt.budget, forecast.catalog.pages, #forecast.comp.strength)
+#forecast <- get.forecast(model, data, forecast.price, forecast.mkt.budget, forecast.catalog.pages, forecast.comp.strength)
 #get.forecast.plot(data, forecast)
